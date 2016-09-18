@@ -1,19 +1,18 @@
 import React from "react";
 
-class TodoItem extends React.Component{
+
+class TodoListItem extends React.Component{
   constructor(props){
     super(props);
   }//contructor(props)
 
   render(){
     return(
-       <li>
-        {item.text}
-        <button onClick={this.onClickDelete}>Delete</button>
+      <li key= className="todo-list--item">
+        {items.text}
       </li>
+
     )
   }
-}//TodoListItem
-
-
+}//TodoList
 export default TodoListItem;
