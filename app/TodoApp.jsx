@@ -10,9 +10,9 @@ class TodoList extends React.Component{
   }//constructor
 
   render(){
-    var listItem = this.props.items.map((item,index)=>{
+    var listItem = this.props.items.map((item,id)=>{
       return (
-        <TodoListItem key={index} index={index} item={item} handleDelete={this.props.isHandleDelete} />
+        <TodoListItem key={id} id={id} item={item} handleDelete={this.props.isHandleDelete} />
       )
     });
 
@@ -37,7 +37,7 @@ class TodoListItem extends React.Component{
   render(){
     return(
       <li>
-        {this.props.item}
+        {this.props.item.text}
         <button onClick={this.onClickDelete}>Delete</button>
       </li>
     )
@@ -59,8 +59,6 @@ class TodoAddItem extends React.Component{
   }
 }
 
-
-
 class TodoApp extends React.Component{
   constructor(props) {
     super(props);
@@ -74,10 +72,9 @@ class TodoApp extends React.Component{
 
   handleSubmit(e){
     e.preventDefault();
-    var nextItems = this.state.items.concat([{item: this.state.text, index: Date.now()}]);
+    var curItem = this.state.items.concat([{text:this.state.text,id:Date.now()}]);
     var nextText = '';
-    this.setState({items: nextItems, text: nextText});
-
+    this.setState({items: curItem,text: nextText});
   }//handleSubmit
 
   handleChange(e){
@@ -96,14 +93,13 @@ class TodoApp extends React.Component{
     //   console.log('run');
     //   this.state.items.splice(i,1);
     // }
-
   }//handleDelete
 
   render(){
     return(
       <div className="todo-container">
         <TodoAddItem items={this.state.items} ishandleSubmit={this.handleSubmit} ishandleChange={this.handleChange}  />
-        <TodoList key={this.state.items} items={this.state.items} isHandleDelete={this.handleDelete} />
+        <TodoList items={this.state.items} isHandleDelete={this.handleDelete} />
       </div>
     )
   }//render
