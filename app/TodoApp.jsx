@@ -1,18 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import classNames from 'classnames';
 //import TodoList from "./components/TodoList.jsx";
 //import TodoItem from "./components/TodoAddItem.jsx";
 
-
 class TodoList extends React.Component{
-  constructor(props) {
-    super(props);
-  }//constructor
 
   render(){
-    var listItem = this.props.items.map((item,id)=>{
+    const listItem = this.props.items.map((item,index)=>{
       return (
-        <TodoListItem key={id} id={id} item={item} handleDelete={this.props.isHandleDelete} />
+        <TodoListItem
+          key={index}
+          index={index}
+          item={item}
+          editItem={this.props.editItem}
+          removeItem={this.props.deleteItem}
+        />
       )
     });
 
@@ -24,25 +27,49 @@ class TodoList extends React.Component{
   }
 }
 
+//-------------------------------------------------------------
+
 class TodoListItem extends React.Component{
   constructor(props) {
     super(props);
-  }//constructor
+    this.onClickDelete = this.onClickDelete.bind(this);
+    this.onClickDone = this.onClickDone.bind(this);
+  }
 
   onClickDelete(){
-    //var index = parseInt(this.props.index)
-    //this.props.handleDelete(index);
+    let index = parseInt(this.props.index);
+    this.props.removeItem(index);
+  }
+
+  onClickDone(){
+    console.log('done');
   }
 
   render(){
+    let btnClass = classNames({
+      'btn': true,
+      'btn-pressed': false
+    });
+
+    // var editText;
+    // if(this.state.isEdit){
+    //   editText = <input type="text" onChange={this.onChangeText} defaultValue=/>
+    // }else{
+    //   editText = <span className="text">{this.props.item.text}</span>
+    // };
+
+
     return(
-      <li>
-        {this.props.item.text}
+      <li className={btnClass}>
+        <input type="text" defaultValue={this.props.item.text} />
+        <button onClick={this.onClickDone}>Done</button>
         <button onClick={this.onClickDelete}>Delete</button>
       </li>
     )
   }
 }
+
+//-------------------------------------------------------------
 
 class TodoAddItem extends React.Component{
   constructor(props) {
@@ -59,47 +86,48 @@ class TodoAddItem extends React.Component{
   }
 }
 
+//-------------------------------------------------------------
+
 class TodoApp extends React.Component{
   constructor(props) {
-    super(props);
+    super();
     this.state = {
-      items:[],
-      text: ''
+      items:[]
     };
+    this.handleDeleteItem = this.handleDeleteItem.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }//constructor
 
   handleSubmit(e){
     e.preventDefault();
-    var curItem = this.state.items.concat([{text:this.state.text,id:Date.now()}]);
-    var nextText = '';
-    this.setState({items: curItem,text: nextText});
+    let curItem = this.state.items.concat([{text:this.state.text, isDone:false}]);
+    this.setState({items: curItem});
   }//handleSubmit
 
   handleChange(e){
     this.setState({text:e.target.value});
   }//handleChange
 
-  handleEdit(e){
-    e.preventDefault();
-    console.log('Edit Me');
-  }//handleEdit
-
-  handleDelete(e){
-    console.log('delete');
-    //this.setState({items:this.state.items});
-    // for(var i = 0; i < this.state.items; i++){
-    //   console.log('run');
-    //   this.state.items.splice(i,1);
-    // }
+  handleDeleteItem(itemIndex){
+    this.state.items.splice(itemIndex,1);
+    this.setState({items: this.state.items});
   }//handleDelete
 
   render(){
     return(
       <div className="todo-container">
-        <TodoAddItem items={this.state.items} ishandleSubmit={this.handleSubmit} ishandleChange={this.handleChange}  />
-        <TodoList items={this.state.items} isHandleDelete={this.handleDelete} />
+        <TodoAddItem
+          items={this.state.items}
+          ishandleSubmit={this.handleSubmit}
+          ishandleChange={this.handleChange}
+        />
+
+        <TodoList
+          items={this.state.items}
+          deleteItem={this.handleDeleteItem}
+          editItem={this.handleEditItem}
+        />
       </div>
     )
   }//render

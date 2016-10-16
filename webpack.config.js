@@ -1,4 +1,6 @@
 var HTMLwebpackPlugin = require('html-webpack-plugin');
+var classNames = require('classnames');
+
 var HTMLwebpackPluginConfig= new HTMLwebpackPlugin({
   template: __dirname +'/app/index.html',
   filename: 'index.html',
